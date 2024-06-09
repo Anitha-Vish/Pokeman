@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import axios from 'axios';
+import "./App.css";
+import './index.css';
 import PokemonList from './Components/PokemonList';
 import PokemonDetail from './Components/PokemonDetail';
 import PokemonInfo from './Components/PokemonInfo';
+
+
 // import {PokemonList }from './Components/AllPokemon';
 // import {PokemonDetail }from './Components/PokemonDetailId';
 // import {PokemonInfo } from './Components/PokemonInfo';
@@ -32,7 +36,7 @@ console.log(pokemons);
           <Route path="/pokemon/:id/:info" element={<PokemonInfo />} /> 
         </Routes>
     
-  
+ 
   );
 }
 
