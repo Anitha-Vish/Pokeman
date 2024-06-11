@@ -6,7 +6,7 @@ import './index.css';
 import PokemonList from './Components/PokemonList';
 import PokemonDetail from './Components/PokemonDetail';
 import PokemonInfo from './Components/PokemonInfo';
-
+import PokemonFight from './Components/PokemonFight'
 
 // import {PokemonList }from './Components/AllPokemon';
 // import {PokemonDetail }from './Components/PokemonDetailId';
@@ -34,6 +34,7 @@ console.log(pokemons);
           <Route path="/pokemon" element={<PokemonList pokemons={pokemons} setPokemons={setPokemons}/>} />
           <Route path="/pokemon/:id" element={<PokemonDetail />} />
           <Route path="/pokemon/:id/:info" element={<PokemonInfo />} /> 
+          <Route path="/pokemon/fight" element={<PokemonFight  pokemons={pokemons} setPokemons={setPokemons}/>} /> 
         </Routes>
     
  
