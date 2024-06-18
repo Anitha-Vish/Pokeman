@@ -7,7 +7,7 @@ const PokemonInfo = () => {
   const [pokemonInfo, setPokemonInfo] = useState(null);
 
   useEffect(() => {
-    axios.get(`http://localhost:3000/pokemon/${id}/${info}`)
+    axios.get(`http://localhost:3015/pokemon/${id}/${info}`)
       .then(response => setPokemonInfo(response.data))
       .catch(error => console.error(error));
   }, [id, info]);
