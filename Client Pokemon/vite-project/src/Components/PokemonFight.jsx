@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
 import "../path/animate.css"; // Make sure to use the correct path to your CSS file
 
 const PokemonFight = ({ pokemons }) => {
@@ -43,8 +45,14 @@ const PokemonFight = ({ pokemons }) => {
       return;
     }
 
-    const damageToPoke2 = Math.max(0, pokemon1.base.Attack - pokemon2.base.Defense);
-    const damageToPoke1 = Math.max(0, pokemon2.base.Attack - pokemon1.base.Defense);
+    const damageToPoke2 = Math.max(
+      0,
+      pokemon1.base.Attack - pokemon2.base.Defense
+    );
+    const damageToPoke1 = Math.max(
+      0,
+      pokemon2.base.Attack - pokemon1.base.Defense
+    );
 
     const updatedHP1 = Math.max(0, pokemon1.currentHP - damageToPoke1);
     const updatedHP2 = Math.max(0, pokemon2.currentHP - damageToPoke2);
@@ -63,7 +71,11 @@ const PokemonFight = ({ pokemons }) => {
       setPokemon2Anim("");
     }, 500);
 
-    if (updatedHP1 <= 0 && updatedHP2 <= 0) {
+    if (
+      updatedHP1 <= 0 &&
+      updatedHP2 <= 0 &&
+      updatedHP1 == pokemon1.currentHP
+    ) {
       setMessage("It's a tie!");
       setBattleFinished(true);
     } else if (updatedHP1 <= 0) {
@@ -73,10 +85,23 @@ const PokemonFight = ({ pokemons }) => {
       setMessage(`${pokemon1.name.english} wins the battle!`);
       setBattleFinished(true);
     } else {
-      setMessage(`Round ${round}: Both Pokémon are still fighting. Continue the battle!`);
+      setMessage(
+        `Round ${round}: Both Pokémon are still fighting. Continue the battle!`
+      );
       setRound(round + 1);
     }
   };
+
+  //Game result
+
+  // useEffect(() => {
+  //   if (round > 1 && !battleFinished) {
+  //     const timer = setTimeout(() => {
+  //       battleRound();
+  //     }, 1000);
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, [round, battleFinished]);
 
   useEffect(() => {
     if (round > 1 && !battleFinished) {
@@ -85,63 +110,94 @@ const PokemonFight = ({ pokemons }) => {
       }, 1000);
       return () => clearTimeout(timer);
     }
+    if (battleFinished) {
+      const gameResult = {
+        pokemon1: pokemon1.name.english,
+        pokemon2: pokemon2.name.english,
+        winner: message.includes("wins") ? message.split(" ")[0] : "Tie",
+        rounds: round,
+        date: new Date().toISOString(),
+      };
+      saveGameResult(gameResult);
+    }
   }, [round, battleFinished]);
 
+  const saveGameResult = async (gameResult) => {
+    try {
+      await axios.post("http://localhost:3015/game/save", gameResult);
+      console.log("Game result saved:", gameResult);
+    } catch (error) {
+      console.error("Error saving game result", error);
+    }
+  };
+
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold underline mb-6">Pokémon Fight</h1>
-      <div className="flex justify-center mb-4">
-        <button
-          className="bg-blue-500 text-white font-bold py-2 px-4 rounded mr-4"
-          onClick={selectRandomPokemons}
-        >
-          Select Random Pokémon
-        </button>
-        <button
-          className="bg-green-500 text-white font-bold py-2 px-4 rounded"
-          onClick={battleRound}
-          disabled={battleFinished || round === 0}
-        >
-          {round === 0 ? "Start Battle" : "Continue Battle"}
-        </button>
-      </div>
-      {message && <p className="text-xl mb-4">{message}</p>}
-      {damage1 !== null && damage2 !== null && (
-        <div className="mb-4">
-          <p className="text-lg">Damage to {pokemon2.name.english}: {damage1}</p>
-          <p className="text-lg">Damage to {pokemon1.name.english}: {damage2}</p>
+   <div className='min-h-screen bg-green-500'>
+      <div className='container mx-auto p-4'>
+        <h1 className='text-3xl font-bold underline mb-6'>Pokémon Fight</h1>
+        
+        <div className='flex justify-center mb-4'>
+          <button
+            className='bg-blue-500 text-white font-bold py-2 px-4 rounded mr-4'
+            onClick={selectRandomPokemons}>
+            Select Random Pokémon
+          </button>
+          <button
+            className='bg-green-700 text-white font-bold py-2 px-4 rounded'
+            onClick={battleRound}
+            disabled={battleFinished || round === 0}>
+            {round === 0 ? "Start Battle" : "Continue Battle"}
+          </button>
         </div>
-      )}
-      <div className="grid grid-cols-2 gap-6">
-        {pokemon1 && (
-          <div className={`bg-white rounded-lg shadow p-4 flex flex-col items-center ${pokemon1Anim}`}>
-            <img
-              src={`https://raw.githubusercontent.com/fanzeyi/pokemon.json/master/images/${String(
-                pokemon1.id
-              ).padStart(3, "0")}.png`}
-              alt={pokemon1.name.english}
-              className="w-32 h-32 mb-4"
-            />
-            <h2 className="text-xl font-bold mb-2">{pokemon1.name.english}</h2>
-            <p>HP: {pokemon1.currentHP}/{pokemon1.base.HP}</p>
+        
+        {message && <p className='text-xl mb-4'>{message}</p>}
+        {damage1 !== null && damage2 !== null && (
+          <div className='mb-4'>
+            <p className='text-lg'>
+              Damage to {pokemon2.name.english}: {damage1}
+            </p>
+            <p className='text-lg'>
+              Damage to {pokemon1.name.english}: {damage2}
+            </p>
           </div>
         )}
-        {pokemon2 && (
-          <div className={`bg-white rounded-lg shadow p-4 flex flex-col items-center ${pokemon2Anim}`}>
-            <img
-              src={`https://raw.githubusercontent.com/fanzeyi/pokemon.json/master/images/${String(
-                pokemon2.id
-              ).padStart(3, "0")}.png`}
-              alt={pokemon2.name.english}
-              className="w-32 h-32 mb-4"
-            />
-            <h2 className="text-xl font-bold mb-2">{pokemon2.name.english}</h2>
-            <p>HP: {pokemon2.currentHP}/{pokemon2.base.HP}</p>
-          </div>
-        )}
+        <div className='grid grid-cols-2 gap-6'>
+          {pokemon1 && (
+            <div
+              className={`bg-green-500 text-white rounded-lg shadow p-4 flex flex-col items-center ${pokemon1Anim}`}>
+              <img
+                src={`https://raw.githubusercontent.com/fanzeyi/pokemon.json/master/images/${String(
+                  pokemon1.id
+                ).padStart(3, "0")}.png`}
+                alt={pokemon1.name.english}
+                className='w-32 h-32 mb-4'
+              />
+              <h2 className='text-xl font-bold mb-2'>{pokemon1.name.english}</h2>
+              <p>
+                HP: {pokemon1.currentHP}/{pokemon1.base.HP}
+              </p>
+            </div>
+          )}
+          {pokemon2 && (
+            <div
+              className={`bg-green-500 text-white rounded-lg shadow p-4 flex flex-col items-center ${pokemon2Anim}`}>
+              <img
+                src={`https://raw.githubusercontent.com/fanzeyi/pokemon.json/master/images/${String(
+                  pokemon2.id
+                ).padStart(3, "0")}.png`}
+                alt={pokemon2.name.english}
+                className='w-32 h-32 mb-4'
+              />
+              <h2 className='text-xl font-bold mb-2'>{pokemon2.name.english}</h2>
+              <p>
+                HP: {pokemon2.currentHP}/{pokemon2.base.HP}
+              </p>
+            </div>
+          )}
+        </div>
+        <Link to="/" className="text-black-500 hover:underline mt-4 inline-block">Back</Link>
       </div>
     </div>
   );
 };
-
 export default PokemonFight;
