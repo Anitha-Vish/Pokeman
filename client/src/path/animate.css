@@ -1,0 +1,57 @@
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-10px);
+  }
+  50% {
+    transform: translateX(10px);
+  }
+  75% {
+    transform: translateX(-10px);
+  }
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  25% {
+    transform: translateY(-20px);
+  }
+  50% {
+    transform: translateY(10px);
+  }
+  75% {
+    transform: translateY(-20px);
+  }
+}
+
+.shake {
+  animation: shake 0.5s;
+}
+
+.bounce {
+  animation: bounce 0.5s;
+}
+
+/* @keyframes attack {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(20px); }
+}
+
+@keyframes recoil {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(-10px); }
+}
+
+.attack {
+  animation: attack 0.5s ease-in-out;
+}
+
+.recoil {
+  animation: recoil 0.5s ease-in-out;
+} */
