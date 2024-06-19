@@ -1,0 +1,34 @@
+
+
+
+ 
+.full-screen-bg 
+   {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1; 
+    } 
+  
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-10px); }
+  40%, 80% { transform: translateX(10px); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  20%, 60% { transform: translateY(-10px); }
+  40%, 80% { transform: translateY(10px); }
+}
+
+.shake {
+  animation: shake 0.5s;
+}
+
+.bounce {
+  animation: bounce 0.5s;
+}
