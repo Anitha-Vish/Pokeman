@@ -13,7 +13,7 @@ const Home = () => {
       }}
     >
       <div className="absolute inset-0 bg-black bg-opacity-50">
-        <h1 className="text-white text-center text-4xl pt-10">Welcome to the Pokemon App</h1>
+        <h1 className="text-white text-center text-4xl pt-10">Welcome to the Pokemon Game</h1>
         <nav className="mt-10">
           <ul className="flex justify-center space-x-10">
             <li><Link className="text-white text-xl" to="/pokemon">Pokemon List</Link></li>
